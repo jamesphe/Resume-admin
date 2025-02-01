@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>简历筛查</h2>
+<div class="screening-form">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">开始筛查</button>
+    </form>
+</div>
+{% endblock %} 
