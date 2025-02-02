@@ -1,0 +1,86 @@
+/* 左侧菜单样式 */
+.nav-sidebar {
+    padding: 0.5rem 0;
+}
+
+/* 菜单项样式 */
+.nav-sidebar .nav-item {
+    margin: 4px 0;
+}
+
+/* 菜单链接样式 */
+.nav-sidebar .nav-link {
+    padding: 0.75rem 1rem;
+    color: #f8f9fa;
+    border-radius: 4px;
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+}
+
+/* 菜单图标样式 */
+.nav-sidebar .nav-link i {
+    width: 24px;
+    text-align: center;
+    margin-right: 8px;
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+/* 菜单悬停效果 */
+.nav-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.nav-sidebar .nav-link:hover i {
+    opacity: 1;
+}
+
+/* 活动菜单项样式 */
+.nav-sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.nav-sidebar .nav-link.active i {
+    opacity: 1;
+}
+
+/* 菜单分组标题 */
+.nav-header {
+    padding: 1rem 1.5rem 0.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* 子菜单样式 */
+.nav-sidebar .nav-treeview {
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+}
+
+.nav-sidebar .nav-treeview .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* 折叠指示器 */
+.nav-sidebar .nav-link.nav-expand {
+    position: relative;
+}
+
+.nav-sidebar .nav-link.nav-expand::after {
+    content: '\f105';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.nav-sidebar .menu-open > .nav-link.nav-expand::after {
+    transform: rotate(90deg);
+} 

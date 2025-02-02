@@ -168,6 +168,101 @@ JAZZMIN_SETTINGS = {
         "sidebar_nav_legacy_style": False,
         "sidebar_nav_flat_style": False,
     },
+
+    # 更新图标设置
+    "icons": {
+        # 简历管理
+        "resumes": "fas fa-folder",  # 简历管理模块
+        "resumes.Resume": "fas fa-file-alt",  # 简历
+        "resumes.ResumeAnalysis": "fas fa-chart-line",  # 简历分析
+        "resumes.ResumeReport": "fas fa-file-contract",  # 分析报告
+
+        # 简历筛查
+        "screening": "fas fa-filter",  # 筛查管理模块
+        "screening.Position": "fas fa-bullseye",  # 职位
+        "screening.ScreeningTask": "fas fa-tasks",  # 筛查任务
+        "screening.JobDescription": "fas fa-clipboard-list",  # 职位描述
+        "screening.Requirement": "fas fa-list-check",  # 要求
+        "screening.Evaluation": "fas fa-star",  # 评估
+
+        # 向量检索
+        "vector_search": "fas fa-search",  # 向量检索模块
+        "vector_search.SearchLog": "fas fa-history",  # 搜索日志
+        "vector_search.VectorIndex": "fas fa-database",  # 向量索引
+
+        # 语言模型
+        "language_models": "fas fa-robot",  # 语言模型模块
+        "language_models.Model": "fas fa-brain",  # 模型
+        "language_models.ModelConfig": "fas fa-cog",  # 模型配置
+
+        # 用户权限
+        "auth": "fas fa-shield-alt",  # 权限模块
+        "auth.user": "fas fa-user",  # 用户
+        "auth.Group": "fas fa-users",  # 用户组
+        "accounts.User": "fas fa-user-tie",  # 账户
+
+        # 其他图标
+        "sites": "fas fa-globe",
+        "admin": "fas fa-cog",
+    },
+
+    # 菜单标签
+    "menu_labels": {
+        "resumes": "简历管理",
+        "screening": "简历筛查",
+        "vector_search": "向量检索",
+        "language_models": "语言模型",
+        "auth": "用户权限",
+        "accounts": "账户管理",
+    },
+
+    # 自定义菜单
+    "custom_links": {
+        "resumes": [{
+            "name": "简历分析",
+            "url": "admin:resumes_resume_changelist",
+            "icon": "fas fa-chart-bar",
+        }],
+        "screening": [{
+            "name": "筛查任务",
+            "url": "admin:screening_screeningtask_changelist",
+            "icon": "fas fa-tasks",
+        }],
+        "vector_search": [{
+            "name": "搜索记录",
+            "url": "admin:vector_search_searchlog_changelist",
+            "icon": "fas fa-history",
+        }],
+    },
+
+    # 菜单显示设置
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    
+    # 菜单顺序
+    "order_with_respect_to": [
+        "auth",
+        "accounts",
+        "resumes",
+        "screening",
+        "vector_search",
+        "language_models",
+    ],
+
+    # 自定义CSS
+    "custom_css": "css/custom_admin.css",
+    
+    # 界面设置
+    "show_ui_builder": True,
+    "changeform_format": "horizontal_tabs",
+    
+    # 顶部导航
+    "topmenu_links": [
+        {"name": "首页", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "简历管理", "url": "admin:resumes_resume_changelist", "permissions": ["resumes.view_resume"]},
+        {"model": "auth.User"},
+        {"app": "resumes"},
+    ],
 }
 
 # UI相关配置
