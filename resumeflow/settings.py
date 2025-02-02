@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import environ
+from django.urls import path, include
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +27,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 第三方应用
+    'rest_framework',
+    'django_filters',
     # 自定义应用
     'accounts.apps.AccountsConfig',
     'resumes.apps.ResumesConfig',
+    'candidates.apps.CandidatesConfig',  
+    'positions.apps.PositionsConfig',    
+    'interviews.apps.InterviewsConfig',  
+    'analytics.apps.AnalyticsConfig',    
     'screening.apps.ScreeningConfig',
     'language_models.apps.LanguageModelsConfig',
     'vector_search.apps.VectorSearchConfig',
@@ -136,7 +144,7 @@ JAZZMIN_SETTINGS = {
     # 网站标题
     "site_title": "智能简历筛查系统",
     "site_header": "智能简历筛查系统",
-    "site_brand": "ATS Admin",
+    "site_brand": "智能简历筛查系统",
     
     # 登录界面设置
     "login_logo": None,  # 可以添加登录页面的 logo
@@ -169,100 +177,160 @@ JAZZMIN_SETTINGS = {
         "sidebar_nav_flat_style": False,
     },
 
-    # 更新图标设置
-    "icons": {
+    # 重新定义菜单结构，严格按照系统设计文档
+    "menu": [
+        # 首页
+        {
+            "name": "首页",
+            "url": "admin:index", 
+            "icon": "fas fa-home"
+        },
+        
         # 简历管理
-        "resumes": "fas fa-folder",  # 简历管理模块
-        "resumes.Resume": "fas fa-file-alt",  # 简历
-        "resumes.ResumeAnalysis": "fas fa-chart-line",  # 简历分析
-        "resumes.ResumeReport": "fas fa-file-contract",  # 分析报告
+        {
+            "name": "简历管理",
+            "icon": "fas fa-file-alt",
+            "permissions": ["resumes.view_resume"],  # 添加权限控制
+            "children": [
+                {
+                    "name": "简历上传",
+                    "model": "resumes.resume",  # 使用 model 而不是 url
+                    "icon": "fas fa-upload"
+                },
+                {
+                    "name": "简历解析",
+                    "model": "resumes.resumeanalysis",
+                    "icon": "fas fa-search"
+                },
+                {
+                    "name": "简历存储",
+                    "model": "resumes.resume",
+                    "icon": "fas fa-database"
+                },
+                {
+                    "name": "简历检索",
+                    "model": "resumes.resumesearch",
+                    "icon": "fas fa-search"
+                }
+            ]
+        },
+        
+        # 候选人管理
+        {
+            "name": "候选人管理",
+            "icon": "fas fa-users",
+            "children": [
+                {
+                    "name": "候选人档案",
+                    "url": "admin:candidates_candidate_changelist",
+                    "icon": "fas fa-address-card"
+                },
+                {
+                    "name": "候选人评估",
+                    "url": "admin:candidates_evaluation_changelist",
+                    "icon": "fas fa-star"
+                },
+                {
+                    "name": "候选人推荐",
+                    "url": "admin:candidates_recommendation_changelist",
+                    "icon": "fas fa-user-check"
+                }
+            ]
+        },
+        
+        # 职位管理
+        {
+            "name": "职位管理",
+            "icon": "fas fa-briefcase",
+            "children": [
+                {
+                    "name": "职位发布",
+                    "url": "admin:positions_position_add",
+                    "icon": "fas fa-plus"
+                },
+                {
+                    "name": "职位维护",
+                    "url": "admin:positions_position_changelist",
+                    "icon": "fas fa-cog"
+                }
+            ]
+        },
+        
+        # 面试管理
+        {
+            "name": "面试管理",
+            "icon": "fas fa-comments",
+            "children": [
+                {
+                    "name": "面试安排",
+                    "url": "admin:interviews_interview_add",
+                    "icon": "fas fa-calendar-plus"
+                },
+                {
+                    "name": "面试记录",
+                    "url": "admin:interviews_interview_changelist",
+                    "icon": "fas fa-clipboard-list"
+                }
+            ]
+        },
+        
+        # 招聘分析
+        {
+            "name": "招聘分析",
+            "icon": "fas fa-chart-line",
+            "children": [
+                {
+                    "name": "招聘进度",
+                    "url": "admin:analytics_recruitmentprogress_changelist",
+                    "icon": "fas fa-tasks"
+                },
+                {
+                    "name": "招聘效果",
+                    "url": "admin:analytics_recruitmentmetrics_changelist",
+                    "icon": "fas fa-chart-bar"
+                }
+            ]
+        },
+        
+        # 系统设置（原系统管理）
+        {
+            "name": "系统设置",
+            "icon": "fas fa-cogs",
+            "permissions": ["auth.view_user"],  # 确保有权限的用户才能看到
+            "children": [
+                {
+                    "name": "用户管理",
+                    "url": "admin:auth_user_changelist",
+                    "icon": "fas fa-user"
+                },
+                {
+                    "name": "角色管理",
+                    "url": "admin:auth_group_changelist",
+                    "icon": "fas fa-users"
+                },
+                {
+                    "name": "权限管理",
+                    "url": "admin:auth_permission_changelist",
+                    "icon": "fas fa-key"
+                }
+            ]
+        }
+    ],
 
-        # 简历筛查
-        "screening": "fas fa-filter",  # 筛查管理模块
-        "screening.Position": "fas fa-bullseye",  # 职位
-        "screening.ScreeningTask": "fas fa-tasks",  # 筛查任务
-        "screening.JobDescription": "fas fa-clipboard-list",  # 职位描述
-        "screening.Requirement": "fas fa-list-check",  # 要求
-        "screening.Evaluation": "fas fa-star",  # 评估
-
-        # 向量检索
-        "vector_search": "fas fa-search",  # 向量检索模块
-        "vector_search.SearchLog": "fas fa-history",  # 搜索日志
-        "vector_search.VectorIndex": "fas fa-database",  # 向量索引
-
-        # 语言模型
-        "language_models": "fas fa-robot",  # 语言模型模块
-        "language_models.Model": "fas fa-brain",  # 模型
-        "language_models.ModelConfig": "fas fa-cog",  # 模型配置
-
-        # 用户权限
-        "auth": "fas fa-shield-alt",  # 权限模块
-        "auth.user": "fas fa-user",  # 用户
-        "auth.Group": "fas fa-users",  # 用户组
-        "accounts.User": "fas fa-user-tie",  # 账户
-
-        # 其他图标
-        "sites": "fas fa-globe",
-        "admin": "fas fa-cog",
+    # 添加应用图标
+    "icons": {
+        "resumes.Resume": "fas fa-file",
+        "resumes.ResumeAnalysis": "fas fa-search",
+        "resumes.ResumeSearch": "fas fa-database",
     },
-
-    # 菜单标签
-    "menu_labels": {
-        "resumes": "简历管理",
-        "screening": "简历筛查",
-        "vector_search": "向量检索",
-        "language_models": "语言模型",
-        "auth": "用户权限",
-        "accounts": "账户管理",
-    },
-
-    # 自定义菜单
-    "custom_links": {
-        "resumes": [{
-            "name": "简历分析",
-            "url": "admin:resumes_resume_changelist",
-            "icon": "fas fa-chart-bar",
-        }],
-        "screening": [{
-            "name": "筛查任务",
-            "url": "admin:screening_screeningtask_changelist",
-            "icon": "fas fa-tasks",
-        }],
-        "vector_search": [{
-            "name": "搜索记录",
-            "url": "admin:vector_search_searchlog_changelist",
-            "icon": "fas fa-history",
-        }],
-    },
-
-    # 菜单显示设置
+    
+    # 确保使用自定义菜单
+    "use_custom_menu": True,
     "show_sidebar": True,
     "navigation_expanded": True,
     
-    # 菜单顺序
-    "order_with_respect_to": [
-        "auth",
-        "accounts",
-        "resumes",
-        "screening",
-        "vector_search",
-        "language_models",
-    ],
-
-    # 自定义CSS
-    "custom_css": "css/custom_admin.css",
-    
-    # 界面设置
-    "show_ui_builder": True,
-    "changeform_format": "horizontal_tabs",
-    
-    # 顶部导航
-    "topmenu_links": [
-        {"name": "首页", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "简历管理", "url": "admin:resumes_resume_changelist", "permissions": ["resumes.view_resume"]},
-        {"model": "auth.User"},
-        {"app": "resumes"},
-    ],
+    # 禁用默认菜单
+    "show_ui_builder": False,
 }
 
 # UI相关配置
@@ -296,4 +364,40 @@ JAZZMIN_UI_TWEAKS = {
         "danger": "btn-danger",
         "success": "btn-success"
     }
+}
+
+# 修改 Debug Toolbar 配置
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
+    
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+    
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ] + MIDDLEWARE  # 确保 debug_toolbar 中间件在最前面
+    
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
+    
+    # Debug Toolbar 配置
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    }
+
+# 添加 REST Framework 配置
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 } 
