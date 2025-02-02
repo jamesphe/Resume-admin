@@ -1,0 +1,10 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5435:5432"  # 这里将容器的5432端口映射到主机的5433端口
+    environment:
+      - POSTGRES_DB=resume_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres 
