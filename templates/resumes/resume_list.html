@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}简历列表{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>简历列表</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>学历</th>
+                        <th>学校</th>
+                        <th>专业</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resume in resumes %}
+                    <tr>
+                        <td>{{ resume.name }}</td>
+                        <td>{{ resume.get_education_display }}</td>
+                        <td>{{ resume.school }}</td>
+                        <td>{{ resume.major }}</td>
+                        <td>{{ resume.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <a href="{% url 'resumes:resume_detail' resume.pk %}" class="btn btn-sm btn-primary">查看</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">暂无简历数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 
